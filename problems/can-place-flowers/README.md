@@ -1,0 +1,108 @@
+# 种花
+
+https://leetcode-cn.com/problems/can-place-flowers/
+
+解题思路类似小学的看数字找规律的方式实现种花.
+
+
+## 初步分析规律
+
+```shell
+# 3 emptyPlace 1 flower
+0 0 0
+ 1
+# 5 emptyPlace 2 flower
+0 0 0 0 0
+ 1   1
+# 7 emptyPlace 3 flower
+0 0 0 0 0 0 0
+ 1   1   1
+# 9 emptyPlace 4 flower
+0 0 0 0 0 0 0 0 0
+ 1   1   1   1
+```
+
+
+## 减去左右 place 后的规律 (trimEmptyPlace)
+
+```shell
+# 1 trimEmptyPlace 1 flower
+0
+1
+# 3 trimEmptyPlace 2 flower
+0 0 0
+1   1
+# 5 trimEmptyPlace 3 flower
+0 0 0 0 0
+1   1   1
+# 7 trimEmptyPlace 4 flower
+0 0 0 0 0 0 0
+1   1   1   1
+```
+
+得到规律从1开始每增加2个位置可多栽一朵花
+
+转换成代码 `floor( (currentRangeEmptyCount-1) / 2 )`
+
+按照如上思路实现后发现
+
+实际运行中会有左右2个0的边界情况
+
+```shell
+输入：
+[0,0,1,0,1]
+1
+输出：
+false
+预期：
+true
+```
+通过 flowerbed 处理前左右均加上 0 解决边界情况
+
+```diff
+- [0,0,1,0,1]
++ [0,0,0,1,0,1,0]
+```
+
+
+## 分析
+
+为什么 `(currentRangeEmptyCount - 1) / 2` 能算出连续空位可插花数?
+
+```shell
+// currentRangeEmpty
+0 0 0 
+// currentRangeEmpty - 1
+0 0
+// 种花 (currentRangeEmptyCount - 1) / 2
+0 1
+```
+
+```shell
+// 6 currentRangeEmpty
+0 0 0 0 0 0
+// currentRangeEmpty - 1
+0 0 0 0 0
+// 种花 (currentRangeEmptyCount - 1) / 2
+0 1 0 1 0
+```
+
+```shell
+// 7 currentRangeEmpty
+0 0 0 0 0 0 0
+// currentRangeEmpty - 1
+0 0 0 0 0 0
+// 种花 (currentRangeEmptyCount - 1) / 2
+0 1 0 1 0 1
+```
+
+```shell
+// 8 currentRangeEmpty
+0 0 0 0 0 0 0 0
+// currentRangeEmpty - 1
+0 0 0 0 0 0 0
+// 种花 (currentRangeEmptyCount - 1) / 2
+0 1 0 1 0 1 0
+```
+
+分析一下会发现连续空位去掉一位后0和1可会占一半,所以 `(currentRangeEmptyCount - 1) / 2`
